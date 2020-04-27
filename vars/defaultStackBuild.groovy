@@ -5,7 +5,7 @@ properties([
     disableConcurrentBuilds()
 ])
 
-node {
+node('dood') {
             stage('Delete workspace'){
                 sh 'ls -alh'
                 echo "should be boring"
