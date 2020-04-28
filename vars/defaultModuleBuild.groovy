@@ -6,13 +6,6 @@ properties([
 ])
 
 node('dood') {
-            stage('Delete workspace'){
-                sh 'ls -alh'
-                echo "should be boring"
-                sh 'rm -rf ..?* .[!.]* *'
-                sh 'ls -alh'
-                echo "should really be boring now"
-            }
             stage('Checkout Code') {
                 checkout scm
             }

@@ -8,9 +8,9 @@ properties([
 node('dood') {
 
 	    stage('variables') {
-	        echo "$TERRAFORM_VERSION"
-		echo "$RUBY_VERSION"
-		echo "$DOCKER_CONTAINER_ID"
+	        echo "Terraform Version = $TERRAFORM_VERSION"
+		echo "Ruby Version = $RUBY_VERSION"
+		echo "Container ID = $DOCKER_CONTAINER_ID"
 	    }
 
             stage('Checkout Code') {
@@ -24,9 +24,10 @@ node('dood') {
                 moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement metadata.json', returnStdout: true).trim()
                 if (moduleURL != null) {
                     stage('Download Dependencies') {
+			workdir = "${env.PWD}"
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
-                        sh "cp -r ${module_name}/${submodulePath}/* $PWD"
+                        sh "cp -r ${module_name}/${submodulePath}/* ${workdir}"
                     }
                 }
             }
