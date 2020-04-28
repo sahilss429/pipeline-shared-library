@@ -29,14 +29,14 @@ node('dood') {
                         sh("git config user.name 'sahilss429'")
                     }
                     stage('ValidateTF') {
-                        sh 'sudo docker run -v ${PWD}:/opt/data builder terraform init'
-			sh 'sudo docker run -v ${PWD}:/opt/data builder terraform validate'
+                        sh 'terraform init'
+			sh 'terraform validate'
                     }
                     stage('ModuleTag') {
-                        sh 'sudo docker run -v${PWD}:/opt/data builder rake tag'
+                        sh 'rake tag'
                     }
                      stage('PublishTag') {
-                         sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && sudo docker run -v${PWD}:/opt/data builder rake publish && git branch -d publish_tmp && git push --tags origin master'
+                         sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
                      }
                 }
             }

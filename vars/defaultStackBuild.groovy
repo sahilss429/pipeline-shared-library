@@ -42,8 +42,8 @@ node('dood') {
                         sh("git config user.name 'sahilss429'")
                     }
                     stage('Validate Terraform') {
-                        sh 'sudo docker run -v ${PWD}:/opt/data builder terraform init'
-                        sh 'sudo docker run -v ${PWD}:/opt/data builder terraform validate'
+                        sh 'terraform init'
+                        sh 'terraform validate'
                     }
                     stage('Terraform Plan') {
 		        echo "terraform plan -lock=true -var-file=vars.tf -input=false -out=plan.tf"
@@ -55,10 +55,10 @@ node('dood') {
                         echo "Not running apply this time command could be terraform apply -lock=true -var-file=vars.tf -input=false plan.tf"
                     }
                     stage('Update Tag') {
-                        sh 'sudo docker run -v${PWD}:/opt/data builder rake tag'
+                        sh 'rake tag'
                     }
                      stage('Publish Tag') {
-                        sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && sudo docker run -v${PWD}:/opt/data builder rake publish && git branch -d publish_tmp && git push --tags origin master'
+                        sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
                      }
                 }
             }
