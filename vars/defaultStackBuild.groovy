@@ -12,7 +12,6 @@ node('dood') {
 		echo "Ruby Version = $RUBY_VERSION"
 		echo "Container ID = $DOCKER_CONTAINER_ID"
 		echo "WORKSPACE = $WORKSPACE"
-		echo "PWD = $PWD"
 	    }
 
             stage('Checkout Code') {
