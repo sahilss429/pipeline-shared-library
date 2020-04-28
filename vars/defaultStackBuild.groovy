@@ -25,7 +25,7 @@ node('dood') {
                     stage('Download Dependencies') {
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
-//                        sh("cp -r ${module_name}/${submodulePath}/* ${PWD}")
+                        sh("cp -r ${module_name}/${submodulePath}/* ${env.PWD}")
 			sh("printenv | sort")
                     }
                 }
