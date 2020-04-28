@@ -6,9 +6,17 @@ properties([
 ])
 
 node('dood') {
+
+	    stage('variables') {
+	        echo "$TERRAFORM_VERSION"
+		echo "$RUBY_VERSION"
+		echo "$DOCKER_CONTAINER_ID"
+	    }
+
             stage('Checkout Code') {
                 checkout scm
             }
+
             stage('Resolve Dependencies') {
 		module_name = sh(script: 'jq --raw-output .dependencies[0].name metadata.json', returnStdout: true).trim()
                 moduleURL = sh(script: 'jq --raw-output .dependencies[0].url metadata.json', returnStdout: true).trim()
@@ -18,8 +26,7 @@ node('dood') {
                     stage('Download Dependencies') {
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
-                        sh("cp -r ${module_name}/${submodulePath}/* .")
-			sh("printenv | sort")
+                        sh "cp -r ${module_name}/${submodulePath}/* $PWD"
                     }
                 }
             }
