@@ -11,6 +11,8 @@ node('dood') {
 	        echo "Terraform Version = $TERRAFORM_VERSION"
 		echo "Ruby Version = $RUBY_VERSION"
 		echo "Container ID = $DOCKER_CONTAINER_ID"
+		echo "WORKSPACE = $WORKSPACE"
+		echo "PWD = $PWD"
 	    }
 
             stage('Checkout Code') {
@@ -24,7 +26,7 @@ node('dood') {
                 moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement metadata.json', returnStdout: true).trim()
                 if (moduleURL != null) {
                     stage('Download Dependencies') {
-			workdir = "${env.PWD}"
+			workdir = "${env.WORKSPACE}"
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
                         sh "cp -r ${module_name}/${submodulePath}/* ${workdir}"

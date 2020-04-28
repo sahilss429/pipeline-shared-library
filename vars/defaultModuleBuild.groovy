@@ -17,7 +17,7 @@ node('dood') {
                         org = tokens[0]
                         repo = tokens[1]
                         branch = tokens[2]
-                        sh("git remote set-url origin git@github.com:sahilss429/terraform-vpc.git")
+                        sh("git remote set-url origin git@github.com:sahilss429/${repo}.git")
                         sh("git config user.email sahilss429@gmail.com")
                         sh("git config user.name 'sahilss429'")
                     }
