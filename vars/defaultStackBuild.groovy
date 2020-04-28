@@ -6,13 +6,6 @@ properties([
 ])
 
 node('dood') {
-            stage('Delete workspace'){
-                sh 'ls -alh'
-                echo "should be boring"
-                sh 'rm -rf ..?* .[!.]* *'
-                sh 'ls -alh'
-                echo "should really be boring now"
-            }
             stage('Checkout Code') {
                 checkout scm
             }
@@ -25,7 +18,7 @@ node('dood') {
                     stage('Download Dependencies') {
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
-                        sh("cp -r ${module_name}/${submodulePath}/* ${env.PWD}")
+                        sh("cp -r ${module_name}/${submodulePath}/* .")
 			sh("printenv | sort")
                     }
                 }
