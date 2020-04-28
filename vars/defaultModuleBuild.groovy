@@ -9,7 +9,7 @@ node('dood') {
             stage('Delete workspace'){
                 sh 'ls -alh'
                 echo "should be boring"
-                sh 'sudo rm -rf ..?* .[!.]* *'
+                sh 'rm -rf ..?* .[!.]* *'
                 sh 'ls -alh'
                 echo "should really be boring now"
             }
