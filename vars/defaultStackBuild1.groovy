@@ -24,6 +24,7 @@ node('dood') {
             }
 
             stage('Resolve Dependencies') {
+		sh('ls -l')
 		module_name = sh(script: 'jq --raw-output .dependencies[0].name metadata.json', returnStdout: true).trim()
                 moduleURL = sh(script: 'jq --raw-output .dependencies[0].url metadata.json', returnStdout: true).trim()
                 submodulePath = sh(script: 'jq --raw-output .dependencies[0].modulepath metadata.json', returnStdout: true).trim()
