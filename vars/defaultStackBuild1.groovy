@@ -33,9 +33,8 @@ node('dood') {
                 stage('Download Dependencies') {
                     sh("printenv | sort")
                     workdir = "$WORKSPACE"
-                    sh("git clone ${moduleURL}")
-                    sh("cd ${module_name} && git checkout tags/v${moduleVersion}")
-                    sh("cp -r ${module_name}/${submodulePath}/* .")
+                    git branch: 'master'
+                        url: "${moduleURL}"
                     sh("ls -l")
                 }
             }
