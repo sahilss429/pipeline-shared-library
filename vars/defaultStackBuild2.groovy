@@ -43,7 +43,7 @@ node('dood') {
 	   sh 'git log -1 --pretty=%B > git_message'
            if (!readFile('git_message').startsWith('[blacksmith]')) {
 		stage('Setup Gitconfig') {
-		    sh("git remote set-url origin git@github.com:sahilss429/${repo}.git")
+		    sh("git remote set-url origin git@github.com:sahilss429/stacks-vertical.git")
 		    sh("git config user.email blacksmith@jenkins.local")
 		    sh("git config user.name 'BlackSmith'")
 		}
