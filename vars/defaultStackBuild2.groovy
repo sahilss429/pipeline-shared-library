@@ -40,6 +40,13 @@ node('dood') {
             }
         }
         stage('Are we building?') {
+	   sh 'git log -1 --pretty=%B > git_message'
+           if (!readFile('git_message').startsWith('[blacksmith]')) {
+		stage('Setup Gitconfig') {
+		    sh("git remote set-url origin git@github.com:sahilss429/$repo.git")
+		    sh("git config user.email blacksmith@jenkins.local")
+		    sh("git config user.name 'BlackSmith'")
+		}
                 stage('Validate Terraform') {
                     sh 'terraform init'
                     sh 'terraform validate'
@@ -57,8 +64,9 @@ node('dood') {
                     sh 'rake tag'
                 }
                 stage('Publish Tag') {
-                    sh 'git config --global user.email "blacksmith@jenkins.local" && git config --global user.name "Blacksmith" && git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
+                    sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
                 }
+	   }
         }
 }
 
