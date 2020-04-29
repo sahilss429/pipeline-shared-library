@@ -33,7 +33,7 @@ node('dood') {
                 stage('Download Dependencies') {
                     sh("printenv | sort")
                     workdir = "$WORKSPACE"
-                    git branch: 'master'
+                    git branch: '*/master'
                         url: "${moduleURL}"
                     sh("ls -l")
                 }
