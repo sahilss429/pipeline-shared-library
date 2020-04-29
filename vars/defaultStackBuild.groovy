@@ -25,6 +25,7 @@ node('dood') {
                 moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement metadata.json', returnStdout: true).trim()
                 if (moduleURL != null) {
                     stage('Download Dependencies') {
+			sh("printenv | sort")
 			workdir = "${env.WORKSPACE}"
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
