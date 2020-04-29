@@ -23,8 +23,8 @@ node('dood') {
     }
         stage('Resolve Dependencies') {
             sh('ls -l')
-            sh('cp $env/apps/$service/dependency.json .')
-            sh('cp $env/apps/$service/vars.tfvars .')
+            sh("cp $env/apps/$service/dependency.json .")
+            sh("cp $env/apps/$service/vars.tfvars .")
             module_name = sh(script: 'jq --raw-output .dependencies[0].name dependency.json', returnStdout: true).trim()
             moduleURL = sh(script: 'jq --raw-output .dependencies[0].url dependency.json', returnStdout: true).trim()
             submodulePath = sh(script: 'jq --raw-output .dependencies[0].modulepath dependency.json', returnStdout: true).trim()
