@@ -42,10 +42,6 @@ node('dood') {
                 sh 'git log -1 --pretty=%B > git_message'
                 if (!readFile('git_message').startsWith('[blacksmith]')) {
                     stage('Setup Gitconfig') {
-                        tokens = "${env.JOB_NAME}".tokenize('/')
-                        org = tokens[0]
-                        repo = tokens[1]
-                        branch = tokens[2]
                         sh("git remote set-url origin git@github.com:sahilss429/myservice-app.git")
                         sh("git config user.email sahilss429@gmail.com")
                         sh("git config user.name 'sahilss429'")
