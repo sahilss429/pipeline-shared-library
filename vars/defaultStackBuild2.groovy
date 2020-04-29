@@ -19,23 +19,23 @@ node('dood') {
     }
 
     stage('Checkout Code') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'prod/apps/myservice-app']], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/stacks-vertical.git']]])
+        checkout scm
     }
-    dir("$env/apps/$service/"){
-        sh('pwd')
         stage('Resolve Dependencies') {
             sh('ls -l')
-            module_name = sh(script: 'jq --raw-output .dependencies[0].name metadata.json', returnStdout: true).trim()
-            moduleURL = sh(script: 'jq --raw-output .dependencies[0].url metadata.json', returnStdout: true).trim()
-            submodulePath = sh(script: 'jq --raw-output .dependencies[0].modulepath metadata.json', returnStdout: true).trim()
-            moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement metadata.json', returnStdout: true).trim()
+            sh('cp $env/apps/$service/dependency.json .')
+            sh('cp $env/apps/$service/vars.tfvars .')
+            module_name = sh(script: 'jq --raw-output .dependencies[0].name dependency.json', returnStdout: true).trim()
+            moduleURL = sh(script: 'jq --raw-output .dependencies[0].url dependency.json', returnStdout: true).trim()
+            submodulePath = sh(script: 'jq --raw-output .dependencies[0].modulepath dependency.json', returnStdout: true).trim()
+            moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement dependency.json', returnStdout: true).trim()
             if (moduleURL != null) {
                 stage('Download Dependencies') {
                     sh("printenv | sort")
                     sh("git clone ${moduleURL}")
                     sh("cd ${module_name} && git checkout tags/v${moduleVersion}")
                     sh("cp -r ${module_name}/${submodulePath}/* .")
-		    sh("ls -l")
+                    sh('ls -l')
                 }
             }
         }
@@ -53,8 +53,13 @@ node('dood') {
                 stage('Terraform Apply') {
                     echo "Not running apply this time command could be terraform apply -lock=true -var-file=vars.tf -input=false plan.tf"
                 }
+                stage('Update Tag') {
+                    sh 'rake tag'
+                }
+                stage('Publish Tag') {
+                    sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
+                }
         }
-    }
 }
 
 }
