@@ -20,7 +20,7 @@ node('dood') {
 	    }
 
             stage('Checkout Code') {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: 'prod/apps/myservice-app']]]], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/stacks-vertical.git']]])
+		checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/stacks-vertical.git']]])
             }
 
             stage('Resolve Dependencies') {
