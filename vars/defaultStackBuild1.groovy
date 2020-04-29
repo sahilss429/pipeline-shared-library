@@ -31,7 +31,7 @@ node('dood') {
                 if (moduleURL != null) {
                     stage('Download Dependencies') {
 			sh("printenv | sort")
-			workdir = "${env.WORKSPACE}"
+			workdir = "$WORKSPACE"
                         sh("git clone ${moduleURL}")
                         sh("cd ${module_name} && git checkout tags/v${moduleVersion} && cd -")
                         sh "cp -r ${module_name}/${submodulePath}/* ${workdir}"
