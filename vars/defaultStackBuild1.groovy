@@ -21,7 +21,7 @@ node('dood') {
     stage('Checkout Code') {
         checkout scm
     }
-    dir("$repo/$env/apps/$service/"){
+    dir("$env/apps/$service/"){
         sh('pwd')
         stage('Resolve Dependencies') {
             sh('ls -l')
