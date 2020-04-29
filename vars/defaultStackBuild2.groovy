@@ -57,7 +57,7 @@ node('dood') {
                     sh 'rake tag'
                 }
                 stage('Publish Tag') {
-                    sh 'git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
+                    sh 'git config --global user.email "blacksmith@jenkins.local" && git config --global user.name "Blacksmith" && git checkout -b publish_tmp && git checkout -B master publish_tmp && rake publish && git branch -d publish_tmp && git push --tags origin master'
                 }
         }
 }
