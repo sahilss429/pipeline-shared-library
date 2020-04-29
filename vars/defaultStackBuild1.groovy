@@ -20,6 +20,8 @@ node('dood') {
 
     stage('Checkout Code') {
         checkout scm
+	sh('ls -l')
+	sh('pwd')
     }
     dir("$env/apps/$service/"){
         sh('pwd')
