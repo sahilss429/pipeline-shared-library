@@ -33,7 +33,6 @@ node('dood') {
         service = tokens[3]
     }
     stage('Are we building?') {
-        def paths[]
         paths = checkFolderForDiffs()
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && paths != null) {
