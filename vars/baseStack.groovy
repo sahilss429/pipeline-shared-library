@@ -33,7 +33,7 @@ node('dood') {
         paths = checkFolderForDiffs()
 	echo "paths= ${paths}"
         sh 'git log -1 --pretty=%B > git_message'
-        if (!readFile('git_message').startsWith('[blacksmith]') && paths != null) {
+        if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
             stage('Setup Gitconfig') {
                 sh("git remote set-url origin git@github.com:sahilss429/myservice-app.git")
                 sh("git config user.email sahilss429@gmail.com")
