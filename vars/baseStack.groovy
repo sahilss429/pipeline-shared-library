@@ -34,6 +34,7 @@ node('dood') {
     }
     stage('Are we building?') {
         paths = checkFolderForDiffs()
+	echo "paths= ${paths}"
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && paths != null) {
             stage('Setup Gitconfig') {
