@@ -7,8 +7,8 @@ def checkFolderForDiffs() {
 
 def buildCommitedApps(paths) {
     echo "Triggering each build for which change is committed."
-    for (int i = 0; i < list.size(); i++) {
-        build '${list[i]}'
+    for (int i = 0; i < paths.size(); i++) {
+        build '${paths[i]}'
     }
 }
 
@@ -22,6 +22,9 @@ properties([
 node('dood') {
     stage('Checkout Code') {
         checkout scm
+    }
+    stage('Trigger jobbuilder') {
+	build 'jobbuilder'
     }
     stage('Values') {
         tokens = "${env.JOB_NAME}".tokenize('/')
