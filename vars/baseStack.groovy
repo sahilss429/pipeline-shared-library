@@ -1,6 +1,6 @@
 def checkFolderForDiffs() {
         def paths = []
-        paths = sh(script: 'for i in `find . -type f -name vars.tfvars|awk -F\'vars.tfvars' '{print $1}\'|sort`; do git diff --quiet --exit-code HEAD~1..HEAD $i; if [ $? == 1 ]; then  echo $i; fi ; done', returnStdout: true).trim()
+        paths = sh(script: 'for i in `find . -type f -name vars.tfvars|awk -F\'vars.tfvars\' \'{print $1}\'|sort`; do git diff --quiet --exit-code HEAD~1..HEAD $i; if [ $? == 1 ]; then  echo $i; fi ; done', returnStdout: true).trim()
         echo "paths= ${paths}"
         return paths
 }
