@@ -26,6 +26,7 @@ node('dood') {
         checkout scm
     }
     stage('create job scripts') {
+	sh('printenv')
 	sh("/bin/bash create_jobs.sh git@github.com:sahilss429/stacks-vertical.git")
     }
     stage('Creating Jobs') {
