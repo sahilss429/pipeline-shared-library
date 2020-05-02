@@ -13,30 +13,35 @@ def buildCommitedApps(paths) {
 }
 
 def call(String masterBuild) {
-//library identifier: '', retriever: legacySCM([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/pipeline-shared-library.git']]])
+
+def tokens = "${masterBuild}".tokenize('/')
+def team = tokens[0]
+def repo = tokens[1]
+def BRANCH = tokens[2]
+def REPO_URL = "git@github.com:/${team}/${repo}.git"
+
+library identifier: '', retriever: legacySCM([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/pipeline-shared-library.git']]])
 
 properties([
-    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'git@github.com:sahilss429/stacks-vertical.git'],
+    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: "${REPO_URL}"],
     buildDiscarder(logRotator(numToKeepStr: '5')),
     disableConcurrentBuilds()
 ])
 
 node('dood') {
-    stage('Values') {
-        tokens = "${masterBuild}".tokenize('/')
-        team = tokens[0]
-        repo = tokens[1]
-        branch = tokens[2]
-	echo "$team"
-	echo "$repo"
-	echo "$branch"
-    }
+//    stage('Values') {
+//        tokens = "${masterBuild}".tokenize('/')
+//        team = tokens[0]
+//        repo = tokens[1]
+//        BRANCH = tokens[2]
+//	REPO_URL = "git@github.com:/${team}/${repo}.git"
+//    }
     stage('Checkout Code') {
         checkout scm
     }
     stage('create job scripts') {
 	sh('printenv')
-	sh("/bin/bash create_jobs.sh git@github.com:sahilss429/stacks-vertical.git")
+	sh("/bin/bash create_jobs.sh ${REPO_URL}")
     }
     stage('Creating Jobs') {
         jobDsl targets: '''jobs/*_1.groovy
@@ -45,15 +50,6 @@ node('dood') {
 			   jobs/*_3_*.groovy
 			   jobs/*_4_*.groovy
 			   jobs/*_5_*.groovy'''
-//        def causes = currentBuild.rawBuild.getCauses()
-//        for(cause in causes) {
-//           if (cause.class.toString().contains("UpstreamCause")) {
-//              println "This job was caused by job " + cause.upstreamProject
-//           } else {
-//              println "Root cause : " + cause.toString()
-//           }
-//        }
-//	build job: '../seed', parameters: [string(name: 'REPO_URL', value: 'git@github.com:sahilss429/stacks-vertical.git')]
     }
     stage('Are we building?') {
         paths = checkFolderForDiffs()
@@ -61,9 +57,9 @@ node('dood') {
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
             stage('Setup Gitconfig') {
-                sh("git remote set-url origin git@github.com:sahilss429/myservice-app.git")
-                sh("git config user.email sahilss429@gmail.com")
-                sh("git config user.name 'sahilss429'")
+                sh("git remote set-url origin ${REPO_URL}")
+                sh("git config user.email blacksmith@jenkins.local")
+                sh("git config user.name 'BlackSmith'")
             }
             stage('SecondaryBuild Trigger') {
                 try {
