@@ -16,7 +16,7 @@ def call(String masterBuild) {
 //library identifier: '', retriever: legacySCM([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/pipeline-shared-library.git']]])
 
 properties([
-    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'git@github.com:sahilss429/stacks-vertical.git']
+    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'git@github.com:sahilss429/stacks-vertical.git'],
     buildDiscarder(logRotator(numToKeepStr: '5')),
     disableConcurrentBuilds()
 ])
