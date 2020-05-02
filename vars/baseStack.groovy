@@ -18,7 +18,7 @@ def tokens = "${masterBuild}".tokenize('/')
 def team = tokens[0]
 def repo = tokens[1]
 def BRANCH = tokens[2]
-def REPO_URL = "git@github.com:/${team}/${repo}.git"
+def REPO_URL = "git@github.com:${team}/${repo}.git"
 
 properties([
     [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: "${REPO_URL}"],
