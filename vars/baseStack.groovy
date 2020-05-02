@@ -13,8 +13,10 @@ def buildCommitedApps(paths) {
 }
 
 def call(String masterBuild) {
+//library identifier: '', retriever: legacySCM([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/pipeline-shared-library.git']]])
 
 properties([
+    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'git@github.com:sahilss429/stacks-vertical.git']
     buildDiscarder(logRotator(numToKeepStr: '5')),
     disableConcurrentBuilds()
 ])
@@ -23,15 +25,24 @@ node('dood') {
     stage('Checkout Code') {
         checkout scm
     }
-    stage('Trigger Seed Job') {
-        def causes = currentBuild.rawBuild.getCauses()
-        for(cause in causes) {
-           if (cause.class.toString().contains("UpstreamCause")) {
-              println "This job was caused by job " + cause.upstreamProject
-           } else {
-              println "Root cause : " + cause.toString()
-           }
-        }
+    stage('create job scripts') {
+	sh("/bin/bash create_jobs.sh ${REPO_URL}")
+    }
+    stage('Creating Jobs') {
+        jobDsl targets: '''jobs/*_1.groovy
+ 			   jobs/*_1_*.groovy
+			   jobs/*_2_*.groovy
+			   jobs/*_3_*.groovy
+			   jobs/*_4_*.groovy
+			   jobs/*_5_*.groovy'''
+//        def causes = currentBuild.rawBuild.getCauses()
+//        for(cause in causes) {
+//           if (cause.class.toString().contains("UpstreamCause")) {
+//              println "This job was caused by job " + cause.upstreamProject
+//           } else {
+//              println "Root cause : " + cause.toString()
+//           }
+//        }
 //	build job: '../seed', parameters: [string(name: 'REPO_URL', value: 'git@github.com:sahilss429/stacks-vertical.git')]
     }
     stage('Values') {
