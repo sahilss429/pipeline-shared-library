@@ -20,7 +20,7 @@ def repo = tokens[1]
 def BRANCH = tokens[2]
 def REPO_URL = "git@github.com:/${team}/${repo}.git"
 
-library identifier: 'master', retriever: legacySCM([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@github.com:sahilss429/pipeline-shared-library.git']]])
+library identifier: 'pipeline-shared-library@master', retriever: modernSCM([$class: 'GitSCMSource', credentialsId: '', remote: 'git@github.com:sahilss429/pipeline-shared-library.git', traits: [gitBranchDiscovery()]])
 
 properties([
     [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: "${REPO_URL}"],
