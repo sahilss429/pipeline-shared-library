@@ -5,17 +5,16 @@ properties([
     disableConcurrentBuilds()
 ])
 
-def job_path = "${env.JOB_NAME}"
 def tokens = "${masterBuild}".tokenize('/')
 def team = tokens[0]
 def repo = tokens[1]
 def BRANCH = tokens[2]
 def REPO_URL = "git@github.com:${team}/${repo}.git"
+def PATH = "${env.JOB_NAME}".split("${repo}/")
 
 
 node('dood') {
     stage('variables') {
-	PATH = sh(script: ''' echo '''+job_path+'|awk -F\'/\' \'{\$1=""; print \$0}\''''' ''', returnStdout: true).trim()
         echo "Terraform Version = $TERRAFORM_VERSION"
         echo "Ruby Version = $RUBY_VERSION"
         echo "Container ID = $DOCKER_CONTAINER_ID"
