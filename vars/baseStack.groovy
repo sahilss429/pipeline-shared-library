@@ -26,7 +26,7 @@ node('dood') {
         checkout scm
     }
     stage('create job scripts') {
-	sh("/bin/bash create_jobs.sh ${REPO_URL}")
+	sh("/bin/bash create_jobs.sh git@github.com:sahilss429/stacks-vertical.git")
     }
     stage('Creating Jobs') {
         jobDsl targets: '''jobs/*_1.groovy
