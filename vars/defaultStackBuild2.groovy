@@ -6,7 +6,7 @@ properties([
 ])
 
 def job_path = ${env.JOB_NAME}
-def PATH = sh(script: "echo \${job_path} |awk -F'/' '{$1=\"\"; print $0}'", returnStdout: true).trim()
+def PATH = sh(script: 'echo ${job_path} |awk -F\'/\' \'{$1=""; print $0}\'', returnStdout: true).trim()
 def tokens = "${masterBuild}".tokenize('/')
 def team = tokens[0]
 def repo = tokens[1]
