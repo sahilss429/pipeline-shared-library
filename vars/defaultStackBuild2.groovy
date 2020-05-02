@@ -5,45 +5,49 @@ properties([
     disableConcurrentBuilds()
 ])
 
+def PATH = sh(script: "echo ${env.JOB_NAME} |awk -F'/' '{$1=\"\"; print $0}'", returnStdout: true).trim()
+def tokens = "${masterBuild}".tokenize('/')
+def team = tokens[0]
+def repo = tokens[1]
+def BRANCH = tokens[2]
+def REPO_URL = "git@github.com:${team}/${repo}.git"
+
+
 node('dood') {
     stage('variables') {
         echo "Terraform Version = $TERRAFORM_VERSION"
         echo "Ruby Version = $RUBY_VERSION"
         echo "Container ID = $DOCKER_CONTAINER_ID"
         echo "WORKSPACE = $WORKSPACE"
-        tokens = "${env.JOB_NAME}".tokenize('/')
-        repo = tokens[0]
-        env = tokens[1]
-        service = tokens[3]
-        echo "$repo/$env/apps/$service/"
+	echo "Terraform PATH = ${PATH}"
     }
 
     stage('Checkout Code') {
         checkout scm
     }
-        stage('Resolve Dependencies') {
-            sh('ls -l')
-            sh("cp $env/apps/$service/dependency.json .")
-            sh("cp $env/apps/$service/vars.tfvars .")
-            module_name = sh(script: 'jq --raw-output .dependencies[0].name dependency.json', returnStdout: true).trim()
-            moduleURL = sh(script: 'jq --raw-output .dependencies[0].url dependency.json', returnStdout: true).trim()
-            submodulePath = sh(script: 'jq --raw-output .dependencies[0].modulepath dependency.json', returnStdout: true).trim()
-            moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement dependency.json', returnStdout: true).trim()
-            if (moduleURL != null) {
-                stage('Download Dependencies') {
-                    sh("printenv | sort")
-                    sh("git clone ${moduleURL}")
-                    sh("cd ${module_name} && git checkout tags/v${moduleVersion}")
-                    sh("cp -r ${module_name}/${submodulePath}/* .")
-                    sh('ls -l')
-                }
+    stage('Resolve Dependencies') {
+        sh('ls -l')
+        sh("cp ${PATH}/dependency.json .")
+        sh("cp ${PATH}/vars.tfvars .")
+        module_name = sh(script: 'jq --raw-output .dependencies[0].name dependency.json', returnStdout: true).trim()
+        moduleURL = sh(script: 'jq --raw-output .dependencies[0].url dependency.json', returnStdout: true).trim()
+        submodulePath = sh(script: 'jq --raw-output .dependencies[0].modulepath dependency.json', returnStdout: true).trim()
+        moduleVersion = sh(script: 'jq --raw-output .dependencies[0].version_requirement dependency.json', returnStdout: true).trim()
+        if (moduleURL != null) {
+            stage('Download Dependencies') {
+                sh("printenv | sort")
+                sh("git clone ${moduleURL}")
+                sh("cd ${module_name} && git checkout tags/v${moduleVersion}")
+                sh("cp -r ${module_name}/${submodulePath}/* .")
+                sh('ls -l')
             }
         }
+    }
         stage('Are we building?') {
 	   sh 'git log -1 --pretty=%B > git_message'
            if (!readFile('git_message').startsWith('[blacksmith]')) {
 		stage('Setup Gitconfig') {
-		    sh("git remote set-url origin git@github.com:sahilss429/stacks-vertical.git")
+		    sh("git remote set-url origin ${REPO_URL}")
 		    sh("git config user.email blacksmith@jenkins.local")
 		    sh("git config user.name 'BlackSmith'")
 		}
