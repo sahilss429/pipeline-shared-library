@@ -23,8 +23,16 @@ node('dood') {
     stage('Checkout Code') {
         checkout scm
     }
-    stage('Trigger jobbuilder') {
-	build 'jobbuilder'
+    stage('Trigger Seed Job') {
+        def causes = currentBuild.rawBuild.getCauses()
+        for(cause in causes) {
+           if (cause.class.toString().contains("UpstreamCause")) {
+              println "This job was caused by job " + cause.upstreamProject
+           } else {
+              println "Root cause : " + cause.toString()
+           }
+        }
+//	build job: '../seed', parameters: [string(name: 'REPO_URL', value: 'git@github.com:sahilss429/stacks-vertical.git')]
     }
     stage('Values') {
         tokens = "${env.JOB_NAME}".tokenize('/')
