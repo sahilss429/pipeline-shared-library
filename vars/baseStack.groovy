@@ -22,6 +22,15 @@ properties([
 ])
 
 node('dood') {
+    stage('Values') {
+        tokens = "${masterBuild}".tokenize('/')
+        team = tokens[0]
+        repo = tokens[1]
+        branch = tokens[2]
+	echo "$team"
+	echo "$repo"
+	echo "$branch"
+    }
     stage('Checkout Code') {
         checkout scm
     }
@@ -45,12 +54,6 @@ node('dood') {
 //           }
 //        }
 //	build job: '../seed', parameters: [string(name: 'REPO_URL', value: 'git@github.com:sahilss429/stacks-vertical.git')]
-    }
-    stage('Values') {
-        tokens = "${env.JOB_NAME}".tokenize('/')
-        repo = tokens[0]
-        env = tokens[1]
-        service = tokens[3]
     }
     stage('Are we building?') {
         paths = checkFolderForDiffs()
