@@ -11,7 +11,8 @@ def repo = tokens[1]
 def BRANCH = tokens[2]
 def REPO_URL = "git@github.com:${team}/${repo}.git"
 def token2 = "${env.JOB_NAME}".tokenize("${repo}/")
-def PATH = token2[1]
+
+def PATH = token2[0]
 
 node('dood') {
     stage('variables') {
