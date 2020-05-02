@@ -15,7 +15,7 @@ def REPO_URL = "git@github.com:${team}/${repo}.git"
 
 node('dood') {
     stage('variables') {
-	PATH = sh(script: 'echo ' job_path '|awk -F\'/\' \'{$1=""; print $0}\'', returnStdout: true).trim()
+	PATH = sh(script: ''' echo '''+job_path+'|awk -F\'/\' \'{$1=""; print $0}\''''' ''', returnStdout: true).trim()
         echo "Terraform Version = $TERRAFORM_VERSION"
         echo "Ruby Version = $RUBY_VERSION"
         echo "Container ID = $DOCKER_CONTAINER_ID"
