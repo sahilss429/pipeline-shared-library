@@ -27,18 +27,11 @@ properties([
 ])
 
 node('dood') {
-//    stage('Values') {
-//        tokens = "${masterBuild}".tokenize('/')
-//        team = tokens[0]
-//        repo = tokens[1]
-//        BRANCH = tokens[2]
-//	REPO_URL = "git@github.com:/${team}/${repo}.git"
-//    }
     stage('Checkout Code') {
         checkout scm
     }
     stage('create job scripts') {
-	sh('printenv')
+	echo "${REPO_URL}"
 	sh("/bin/bash create_jobs.sh ${REPO_URL}")
     }
     stage('Creating Jobs') {
