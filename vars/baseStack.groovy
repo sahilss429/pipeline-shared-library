@@ -49,7 +49,7 @@ node('dood') {
             }
             stage('SecondaryBuild Trigger') {
                 try {
-                    for (int i = 0; i < job_paths.size(); i++) {
+                    for (int i = 0; i < job_paths.length; i++) {
 			echo "${repo}/${job_paths[i]}"
         		//build "${repo}/${dir_paths[i]}"
 		    }
