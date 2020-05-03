@@ -1,16 +1,9 @@
 def checkFolderForDiffs() {
         def paths = []
         paths = sh(script: '/bin/bash change.sh', returnStdout: true).trim()
-        echo "paths= ${paths}"
         return paths
 }
 
-def buildCommitedApps(paths) {
-    echo "Triggering each build for which change is committed."
-    for (int i = 0; i < paths.size(); i++) {
-        build '${paths[i]}'
-    }
-}
 
 def call(String masterBuild) {
 
@@ -43,10 +36,9 @@ node('dood') {
 			   jobs/*_5_*.groovy'''
     }
     stage('Are we building?') {
-        paths = checkFolderForDiffs()
-	    echo "paths= ${repo}/${paths}"
+        def dir_paths = checkFolderForDiffs()
         sh 'git log -1 --pretty=%B > git_message'
-        if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
+        if (!readFile('git_message').startsWith('[blacksmith]') && dir_paths != "") {
             stage('Setup Gitconfig') {
                 sh("git remote set-url origin ${REPO_URL}")
                 sh("git config user.email blacksmith@jenkins.local")
@@ -54,7 +46,10 @@ node('dood') {
             }
             stage('SecondaryBuild Trigger') {
                 try {
-                    buildCommitedApps(paths)
+                    for (int i = 0; i < dir_paths.size(); i++) {
+			echo "${repo}/${dir_paths[i]}"
+        		build "${repo}/${dir_paths[i]}"
+		    }
                 }
                 catch(err) {
                     return true
