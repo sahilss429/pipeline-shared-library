@@ -28,7 +28,7 @@ node('dood') {
 	sh("/bin/bash create_jobs.sh ${REPO_URL}")
     }
     stage('Creating Jobs') {
-	ScriptApproval scriptApproval = ScriptApproval.get()
+	def ScriptApproval scriptApproval = ScriptApproval.get()
 	scriptApproval.pendingScripts.each {
     	    scriptApproval.approveScript(it.hash)
 	}
