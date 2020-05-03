@@ -43,7 +43,11 @@ node('dood') {
 			   jobs/*_5_*.groovy'''
     }
     stage('Are we building?') {
-        paths = checkFolderForDiffs()
+	   try {
+		paths = sh(script: 'for i in `find . -type f -name vars.tfvars|awk -F\'vars.tfvars\' \'{print $1}\'|sort`; do git diff --quiet --exit-code HEAD~1..HEAD $i; if [ $? == 1 ]; then  echo $i; fi ; done', returnStdout: true).trim()
+	   } catch (err) {
+	        echo err.getMessage()
+	   }
 	echo "paths= ${paths}"
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
