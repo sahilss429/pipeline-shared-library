@@ -37,7 +37,7 @@ node('dood') {
     }
     stage('Are we building?') {
         def dir_paths = checkFolderForDiffs()
-	def job_paths = "$dir_paths".split(' ').join(',')
+	def job_paths = "$dir_paths".split(' ').join(', ')
 	echo "$job_paths"
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && dir_paths != "") {
@@ -48,7 +48,7 @@ node('dood') {
             }
             stage('SecondaryBuild Trigger') {
                 try {
-                    for (int i = 0; i < dir_paths.size(); i++) {
+                    for (int i = 0; i < job_paths.size(); i++) {
 			echo "${repo}/${dir_paths[i]}"
         		//build "${repo}/${dir_paths[i]}"
 		    }
