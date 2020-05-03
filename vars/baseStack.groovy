@@ -6,10 +6,6 @@ def checkFolderForDiffs() {
 
 import org.jenkinsci.plugins.scriptsecurity.scripts.ScriptApproval
 
-ScriptApproval scriptApproval = ScriptApproval.get()
-scriptApproval.pendingScripts.each {
-    scriptApproval.approveScript(it.hash)
-}
 def call(String masterBuild) {
 def tokens = "${masterBuild}".tokenize('/')
 def team = tokens[0]
@@ -32,8 +28,6 @@ node('dood') {
 	sh("/bin/bash create_jobs.sh ${REPO_URL}")
     }
     stage('Creating Jobs') {
-	import org.jenkinsci.plugins.scriptsecurity.scripts.ScriptApproval
-
 	ScriptApproval scriptApproval = ScriptApproval.get()
 	scriptApproval.pendingScripts.each {
     	    scriptApproval.approveScript(it.hash)
