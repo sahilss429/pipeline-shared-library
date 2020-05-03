@@ -52,28 +52,19 @@ node('dood') {
         	def files = new ArrayList(entry.affectedFiles)
         	for (int k = 0; k < files.size(); k++) {
             	   def file = files[k]
-            	   echo "  ${file.editType.name} ${file.path}"
+            	   def paths = "${repo}/${file.path}" - "/vars.tfvars"
+		   sh 'git log -1 --pretty=%B > git_message'
+		   if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
+			stage('Setup Gitconfig') {
+			   sh("git remote set-url origin ${REPO_URL}")
+			   sh("git config user.email blacksmith@jenkins.local")
+			   sh("git config user.name 'BlackSmith'")
+			}
+		   }
+			
         	}
     	   }
 	}
-	echo "paths= ${paths}"
-        sh 'git log -1 --pretty=%B > git_message'
-        if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
-            stage('Setup Gitconfig') {
-                sh("git remote set-url origin ${REPO_URL}")
-                sh("git config user.email blacksmith@jenkins.local")
-                sh("git config user.name 'BlackSmith'")
-            }
-            stage('SecondaryBuild Trigger') {
-                try {
-                    buildCommitedApps(paths)
-                }
-                catch(err) {
-                    return true
-                }
-                echo "Triggering Secondary Builds..."
-            }
-        }
     }
 }
 }
