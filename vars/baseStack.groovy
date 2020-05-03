@@ -32,6 +32,13 @@ node('dood') {
 	sh("/bin/bash create_jobs.sh ${REPO_URL}")
     }
     stage('Creating Jobs') {
+	import org.jenkinsci.plugins.scriptsecurity.scripts.ScriptApproval
+
+	ScriptApproval scriptApproval = ScriptApproval.get()
+	scriptApproval.pendingScripts.each {
+    	    scriptApproval.approveScript(it.hash)
+	}
+
         jobDsl targets: '''jobs/*_1.groovy
  			   jobs/*_1_*.groovy
 			   jobs/*_2_*.groovy
