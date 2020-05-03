@@ -37,7 +37,8 @@ node('dood') {
     }
     stage('Are we building?') {
         def dir_paths = checkFolderForDiffs()
-	echo "$dir_paths"
+	def job_paths = "$dir_paths".split(' ').join(',')
+	echo "$job_paths"
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && dir_paths != "") {
             stage('Setup Gitconfig') {
