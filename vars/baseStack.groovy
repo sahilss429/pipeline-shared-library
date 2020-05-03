@@ -49,8 +49,9 @@ node('dood') {
             }
             stage('SecondaryBuild Trigger') {
                 try {
-                    for (int i = 0; i < job_paths.length; i++) {
-			echo "${repo}/${job_paths[i]}"
+		    def arrayLength = dir_paths.length
+                    for (int i = 0; i < arrayLength; i++) {
+			echo "${repo}/${dir_paths[i]}"
         		//build "${repo}/${dir_paths[i]}"
 		    }
                 }
