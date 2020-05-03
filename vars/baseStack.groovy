@@ -52,7 +52,7 @@ node('dood') {
 		    echo "$arrayLength"
                     for (int i = 0; i < arrayLength; i++) {
 			echo "${repo}/${dir_paths[i]}"
-        		build "${repo}/${dir_paths[i]}"
+        		build "${dir_paths[i]}"
 		    }
                 }
                 catch(err) {
