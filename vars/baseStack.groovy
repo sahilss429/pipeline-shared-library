@@ -36,8 +36,8 @@ node('dood') {
 			   jobs/*_5_*.groovy'''
     }
     stage('Are we building?') {
-	def dir_paths = new String[]
-        dir_paths = checkFolderForDiffs()
+//	def dir_paths = new String[]
+       String[] dir_paths = checkFolderForDiffs()
 	echo "$dir_paths"
         sh 'git log -1 --pretty=%B > git_message'
         if (!readFile('git_message').startsWith('[blacksmith]') && dir_paths != "") {
