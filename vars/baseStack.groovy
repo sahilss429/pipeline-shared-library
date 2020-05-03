@@ -50,7 +50,8 @@ node('dood') {
             }
             stage('SecondaryBuild Trigger') {
                 try {
-		    def arrayLength = dir_paths.length
+		    def arrayLength = dir_paths.size()
+		    echo "$arrayLength"
                     for (int i = 0; i < arrayLength; i++) {
 			echo "${repo}/${dir_paths[i]}"
         		//build "${repo}/${dir_paths[i]}"
