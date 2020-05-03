@@ -52,7 +52,9 @@ node('dood') {
         	def files = new ArrayList(entry.affectedFiles)
         	for (int k = 0; k < files.size(); k++) {
             	   def file = files[k]
-            	   def paths = "${repo}/${file.path}" - "/vars.tfvars"
+		   echo "${file.path}"
+		   def full_path = "${file.path}"
+            	   def paths = "${repo}/${full_path}" - "/vars.tfvars"
 		   sh 'git log -1 --pretty=%B > git_message'
 		   if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
 			stage('Setup Gitconfig') {
