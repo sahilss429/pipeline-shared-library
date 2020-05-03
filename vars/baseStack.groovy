@@ -1,6 +1,6 @@
 def checkFolderForDiffs() {
         def paths = []
-        paths = sh(script: '''for i in `find . -type f -name vars.tfvars|awk -F\'vars.tfvars\' \'{print $1}\'|sort`; do git diff --quiet --exit-code HEAD~1..HEAD $i; if [ $? == 1 ]; then  echo $i; fi ; done''', returnStdout: true).trim()
+        paths = sh(script: '/bin/bash change.sh', returnStdout: true).trim()
         echo "paths= ${paths}"
         return paths
 }
@@ -43,30 +43,25 @@ node('dood') {
 			   jobs/*_5_*.groovy'''
     }
     stage('Are we building?') {
-	def changeLogSets = currentBuild.rawBuild.changeSets
-	for (int i = 0; i < changeLogSets.size(); i++) {
-    	   def entries = changeLogSets[i].items
-           for (int j = 0; j < entries.length; j++) {
-        	def entry = entries[j]
-        	echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
-        	def files = new ArrayList(entry.affectedFiles)
-        	for (int k = 0; k < files.size(); k++) {
-            	   def file = files[k]
-		   echo "${file.path}"
-		   def full_path = "${file.path}"
-            	   def paths = "${repo}/${full_path}" - "/vars.tfvars"
-		   sh 'git log -1 --pretty=%B > git_message'
-		   if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
-			stage('Setup Gitconfig') {
-			   sh("git remote set-url origin ${REPO_URL}")
-			   sh("git config user.email blacksmith@jenkins.local")
-			   sh("git config user.name 'BlackSmith'")
-			}
-		   }
-			
-        	}
-    	   }
-	}
+        paths = checkFolderForDiffs()
+	    echo "paths= ${repo}/${paths}"
+        sh 'git log -1 --pretty=%B > git_message'
+        if (!readFile('git_message').startsWith('[blacksmith]') && paths != "") {
+            stage('Setup Gitconfig') {
+                sh("git remote set-url origin ${REPO_URL}")
+                sh("git config user.email blacksmith@jenkins.local")
+                sh("git config user.name 'BlackSmith'")
+            }
+            stage('SecondaryBuild Trigger') {
+                try {
+                    buildCommitedApps(paths)
+                }
+                catch(err) {
+                    return true
+                }
+                echo "Triggering Secondary Builds..."
+            }
+        }
     }
 }
 }
