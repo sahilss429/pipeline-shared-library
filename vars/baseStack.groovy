@@ -4,7 +4,7 @@ def checkFolderForDiffs() {
         return paths
 }
 
-import org.jenkinsci.plugins.scriptsecurity.scripts.ScriptApproval
+//import org.jenkinsci.plugins.scriptsecurity.scripts.ScriptApproval
 
 def call(String masterBuild) {
 def tokens = "${masterBuild}".tokenize('/')
@@ -28,10 +28,10 @@ node('dood') {
 	sh("/bin/bash create_jobs.sh ${REPO_URL}")
     }
     stage('Creating Jobs') {
-	def ScriptApproval scriptApproval = ScriptApproval.get()
-	scriptApproval.pendingScripts.each {
-    	    scriptApproval.approveScript(it.hash)
-	}
+//	def ScriptApproval scriptApproval = ScriptApproval.get()
+//	scriptApproval.pendingScripts.each {
+//    	    scriptApproval.approveScript(it.hash)
+//	}
 
         jobDsl targets: '''jobs/*_1.groovy
  			   jobs/*_1_*.groovy
