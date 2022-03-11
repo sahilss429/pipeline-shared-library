@@ -12,7 +12,7 @@ podTemplate(
     name: "jenkins_slave",
     label: "jenkins_slave",
     containers: [
-      containerTemplate(name: 'jnlp', image: '${awsAccount}.dkr.ecr.ap-south-1.amazonaws.com/jenkins-slave:latest', alwaysPullImage: true, command: '/bin/sh -c ', args: '/usr/local/bin/jenkins-slave', ttyEnabled: true, resourceRequestCpu: '400m', resourceLimitCpu: '800m', resourceRequestMemory: '1200Mi', resourceLimitMemory: '2000Mi')
+      containerTemplate(name: 'jnlp', image: "${awsAccount}.dkr.ecr.ap-south-1.amazonaws.com/jenkins-slave:latest", alwaysPullImage: true, command: '/bin/sh -c ', args: '/usr/local/bin/jenkins-slave', ttyEnabled: true, resourceRequestCpu: '400m', resourceLimitCpu: '800m', resourceRequestMemory: '1200Mi', resourceLimitMemory: '2000Mi')
     ],
     volumes: [
         hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
