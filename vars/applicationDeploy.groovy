@@ -31,7 +31,7 @@ properties([
   stage('Checkout Code') {
     checkout([$class: 'GitSCM', branches: [[name: "*/${git_app_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: "${git_app_branch}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'test', url: "${git_app_repo}"]]])
     checkout([$class: 'GitSCM', branches: [[name: "*/kubernetes"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "./${infra_repo}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'test', url: "${git_infra_repo}"]]])
-    #notifySlack(buildstatus, slackChannel)
+    //notifySlack(buildstatus, slackChannel)
   }
   stage('Are we building?') {
     if (git_app_branch == "staging" || git_app_branch == "preprod" || git_app_branch == "production" || git_app_branch == "master") {
@@ -46,7 +46,7 @@ properties([
               currentBuild.result = 'FAILURE'
               throw e
           } finally {
-              #notifySlack(currentBuild.result, slackChannel)
+              //notifySlack(currentBuild.result, slackChannel)
           }
         }
       }
@@ -62,7 +62,7 @@ properties([
               currentBuild.result = 'FAILURE'
               throw e
           } finally {
-              #notifySlack(currentBuild.result, slackChannel)
+              //notifySlack(currentBuild.result, slackChannel)
           }
         }
       }
