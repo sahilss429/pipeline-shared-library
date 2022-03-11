@@ -38,7 +38,7 @@ properties([
       stage('Production Equivalent Environment') {
         ansiColor('xterm') {
           try {
-            withCredentials([string(credentialsId: 'jenkins-deploy', variable: 'ARGOCD_AUTH_TOKEN'),usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
+            withCredentials([usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
               sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
               sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} production")
             }
@@ -54,7 +54,7 @@ properties([
       stage('Non Production Environment') {
         ansiColor('xterm') {
           try {
-            withCredentials([usernamePassword(string(credentialsId: 'jenkins-deploy', variable: 'ARGOCD_AUTH_TOKEN'),usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
+            withCredentials([usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
               sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
               sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} nonprod")
             }
