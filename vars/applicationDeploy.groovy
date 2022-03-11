@@ -31,7 +31,7 @@ properties([
   stage('Checkout Code') {
     checkout([$class: 'GitSCM', branches: [[name: "*/${git_app_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: "${git_app_branch}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'test', url: "${git_app_repo}"]]])
     checkout([$class: 'GitSCM', branches: [[name: "*/kubernetes"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "./${infra_repo}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'test', url: "${git_infra_repo}"]]])
-    notifySlack(buildstatus, slackChannel)
+    #notifySlack(buildstatus, slackChannel)
   }
   stage('Are we building?') {
     if (git_app_branch == "staging" || git_app_branch == "preprod" || git_app_branch == "production" || git_app_branch == "master") {
@@ -39,46 +39,14 @@ properties([
         ansiColor('xterm') {
           try {
             withCredentials([string(credentialsId: 'jenkins-deploy', variable: 'ARGOCD_AUTH_TOKEN'),usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
-              sh("cd \$(find . -type f -name Jenkinsfile -printf '%h\n' -quit) && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
-              sh("ssh-agent && eval `ssh-agent -s` && ssh-add ${private_key} && cd ${WORKSPACE} && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} production")
+              sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
+              sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} production")
             }
           } catch(Exception e) {
               currentBuild.result = 'FAILURE'
               throw e
           } finally {
-              notifySlack(currentBuild.result, slackChannel)
-          }
-        }
-      }
-    }else if (git_app_branch.startsWith('dev') || git_app_branch.startsWith('bugfix') || git_app_branch.startsWith('feature') || git_app_branch.startsWith('hotfix')) {
-      stage('Dev Environment') {
-        ansiColor('xterm') {
-          try {
-            withCredentials([string(credentialsId: 'jenkins-deploy', variable: 'ARGOCD_AUTH_TOKEN'),usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
-              sh("cd \$(find . -type f -name Jenkinsfile -printf '%h\n' -quit) && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
-              sh("ssh-agent && eval `ssh-agent -s` && ssh-add ${private_key} && cd ${WORKSPACE} && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} dev")
-            }
-          } catch(Exception e) {
-              currentBuild.result = 'FAILURE'
-              throw e
-          } finally {
-              notifySlack(currentBuild.result, slackChannel)
-          }
-        }
-      }
-    }else if (git_app_branch == "infra") {
-      stage('Infra Environment') {
-        ansiColor('xterm') {
-          try {
-            withCredentials([usernamePassword(string(credentialsId: 'jenkins-deploy', variable: 'ARGOCD_AUTH_TOKEN'),usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
-              sh("cd \$(find . -type f -name Jenkinsfile -printf '%h\n' -quit) && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
-              sh("ssh-agent && eval `ssh-agent -s` && ssh-add ${private_key} && cd ${WORKSPACE} && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} infra")
-            }
-          } catch(Exception e) {
-              currentBuild.result = 'FAILURE'
-              throw e
-          } finally {
-              notifySlack(currentBuild.result, slackChannel)
+              #notifySlack(currentBuild.result, slackChannel)
           }
         }
       }
@@ -87,14 +55,14 @@ properties([
         ansiColor('xterm') {
           try {
             withCredentials([usernamePassword(string(credentialsId: 'jenkins-deploy', variable: 'ARGOCD_AUTH_TOKEN'),usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "test", keyFileVariable: 'private_key')]) {
-              sh("cd \$(find . -type f -name Jenkinsfile -printf '%h\n' -quit) && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
-              sh("ssh-agent && eval `ssh-agent -s` && ssh-add ${private_key} && cd ${WORKSPACE} && cp ${WORKSPACE}/${infra_repo}/templates/Makefile . && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} nonprod")
+              sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
+              sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} nonprod")
             }
           } catch(Exception e) {
               currentBuild.result = 'FAILURE'
               throw e
           } finally {
-              notifySlack(currentBuild.result, slackChannel)
+              #notifySlack(currentBuild.result, slackChannel)
           }
         }
       }
