@@ -29,8 +29,8 @@ properties([
     sh('whoami && pwd')
   }
   stage('Checkout Code') {
-    checkout([$class: 'GitSCM', branches: [[name: "*/${git_app_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: "${git_app_branch}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'test', url: "${git_app_repo}"]]])
-    checkout([$class: 'GitSCM', branches: [[name: "*/kubernetes"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "./${infra_repo}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'test', url: "${git_infra_repo}"]]])
+    checkout([$class: 'GitSCM', branches: [[name: "*/${git_app_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'LocalBranch', localBranch: "${git_app_branch}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '28053e92-a720-4dd1-86ca-fff775b1ae50', url: "${git_app_repo}"]]])
+    checkout([$class: 'GitSCM', branches: [[name: "*/kubernetes"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "./${infra_repo}"]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '28053e92-a720-4dd1-86ca-fff775b1ae50', url: "${git_infra_repo}"]]])
     //notifySlack(buildstatus, slackChannel)
   }
   stage('Are we building?') {
