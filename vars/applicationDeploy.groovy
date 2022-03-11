@@ -40,7 +40,7 @@ properties([
           try {
             withCredentials([usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "28053e92-a720-4dd1-86ca-fff775b1ae50", keyFileVariable: 'private_key')]) {
               sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
-              sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} production")
+              sh("ssh-agent && eval `ssh-agent -s` && ssh-add ${private_key} && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} production")
             }
           } catch(Exception e) {
               currentBuild.result = 'FAILURE'
@@ -56,7 +56,7 @@ properties([
           try {
             withCredentials([usernamePassword(credentialsId: "argosecret", passwordVariable: 'argopassword', usernameVariable: 'argouser'),sshUserPrivateKey(credentialsId: "28053e92-a720-4dd1-86ca-fff775b1ae50", keyFileVariable: 'private_key')]) {
               sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} install")
-              sh("make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} nonprod")
+              sh("ssh-agent && eval `ssh-agent -s` && ssh-add ${private_key} && make INFRA_REPO=${infra_repo} SERVICE_NAME=${SERVICE_NAME} nonprod")
             }
           } catch(Exception e) {
               currentBuild.result = 'FAILURE'
