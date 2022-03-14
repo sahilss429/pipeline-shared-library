@@ -8,6 +8,7 @@ def awsAccount = tokens[2]
 def git_app_branch = "${env.BRANCH_NAME}"
 def buildstatus = "STARTED"
 def git_infra_repo = "git@github.com:sahilss429/${infra_repo}.git"
+
 podTemplate(
     name: "jenkins_slave",
     label: "jenkins_slave",
